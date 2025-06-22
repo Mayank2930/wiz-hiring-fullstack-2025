@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environments
+venv/
+.env/
+.envrc
+.venv/
+
+# FastAPI specific
+instance/
+*.db
+*.sqlite3
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test and coverage
+htmlcov/
+.coverage
+.tox/
+.pytest_cache/
+.cache/
+*.log
+
+# Mypy
+.mypy_cache/
+.dmypy.json
+
+# Pydantic
+*.json
+
+# Build
+build/
+dist/
+*.egg-
