@@ -1,179 +1,123 @@
-# BookMySlot – Fullstack Hiring Challenge for New Grads
+# Mini-Calendly
 
-Welcome to the WizCommerce Fullstack Hiring Challenge! This challenge is designed to assess your frontend and backend skills in building a simple, real-world application. Good luck, and have fun!
-
-> 🧠 **Note:** This challenge is ideal for SD1 candidates applying for either frontend or backend roles — but the best candidates will attempt both parts. We'll evaluate you on your strengths, but fullstack attempts are highly appreciated.
+A lightweight scheduling app inspired by Calendly—built with FastAPI, PostgreSQL, and React/Vite. Users can create events with time slots and public visitors can book them via name+email. Supports time-zone conversion, slot capacity, and optional booking management.
 
 ---
 
-## 🔄 Project Overview
 
-Build a simple scheduling application where users can create events and let others book available time slots. Think of it as a mini-Calendly.
+## 🌐 Live Demo
+
+- **Frontend:** https://wiz-hiring-fullstack-2025-98dp7m4zd-mayank2930s-projects.vercel.app/  
+- **Backend API:** _(to be deployed; URL will be added here)_  
+- **Database Admin:** _(to be deployed; URL will be added here)_
+
+## 🧐 Overview & Approach
+
+- **Backend**:  
+  - **FastAPI** for async, type-safe HTTP endpoints  
+  - **SQLAlchemy 2.0 + asyncpg** for async Postgres access  
+  - **Alembic** for schema migrations  
+  - **Pydantic** for request/response validation  
+- **Frontend**:  
+  - **Vite + React** for a fast dev workflow  
+  - **Tailwind CSS** for utility-first styling  
+  - **React Router** for client-side navigation  
+  - **React Hook Form + Yup** for robust form validation  
+  - **date-fns-tz** for time-zone conversion  
+- **Deployment**:  
+  - **Railway** for managed Postgres + FastAPI hosting  
+  - **Vercel** for CDN-powered frontend hosting  
+
+We keep all code in a **monorepo**: a single GitHub repo with `/backend` and `/frontend` directories, each deployed separately.
+
+---
+
+## 📁 Folder Structure
+
+/
+├─ backend/ # FastAPI app \
+│ ├─ app/ \
+│ │ ├─ api/ # Routers & dependencies \
+│ │ ├─ core/ # Config & security \
+│ │ ├─ crud/ # Database CRUD logic \
+│ │ ├─ db/ # Session, Base, migrations \
+│ │ ├─ models/ # SQLAlchemy models \
+│ │ ├─ schemas/ # Pydantic schemas \
+│ │ └─ main.py # FastAPI entrypoint \
+│ ├─ migrations/ # Alembic migration scripts \
+│ ├─ requirements.txt \
+│ └─ Procfile # Railway start command \
+└─ frontend/ # React/Vite app \
+├─ public/ # Static assets & index.html \
+├─ src/ \
+│ ├─ api/ # axios instance \
+│ ├─ components/ # Reusable UI components \
+│ ├─ hooks/ # Custom React hooks \
+│ ├─ pages/ # Route page components \
+│ ├─ styles/ # Tailwind config & CSS \
+│ └─ main.tsx # React entrypoint \
+├─ package.json \
+└─ tailwind.config.js \
+
 
 ---
 
 ## 🚀 Core Features
 
-### ✏️ 1. Create Event (Private User)
-
-* Input: Event title, description
-* List of available time slots (ISO 8601 format: `2025-06-20T10:00`)
-* Max bookings per slot
-
-### 📋 2. Public Event Listing
-
-* List of all created events with titles and basic info
-* Click to see event details + available time slots
-
-### ⏰ 3. Booking Interface
-
-* Visitors can enter name + email to book a slot
-* Slot becomes unavailable after booking
-* Prevent double booking for same user + slot
-
-### 🌍 4. Time Zone Support
-
-* Users should be able to view and book slots in **their local time zone**
-* Time slots should auto-convert to user's browser or selected time zone
-* Store data in UTC and convert client-side using libraries like `date-fns-tz` or `luxon`
-
-### 📅 5. View My Bookings (optional)
-
-* User can see all their past bookings (filter by email)
+1. **Create Event** (authenticated users)  
+   - Title, description, multiple UTC time slots, per-slot capacity  
+2. **Public Event Listing**  
+   - `GET /events` & `GET /events/{id}` endpoints  
+3. **Booking Interface**  
+   - Visitors book by name+email; enforces capacity & no duplicates  
+4. **Time Zone Support**  
+   - Store slots in UTC; convert client-side via `date-fns-tz`  
+5. **View My Bookings**  
+   - Public lookup by email or authenticated lookup; cancel bookings  
 
 ---
 
-## 🖥 Suggested Frontend Screens
+## 🎁 Bonus Features
 
-### 1. **Home Page (Event Listing)**
-
-* Displays all upcoming public events
-* Basic event metadata: name, creator, number of slots
-
-### 2. **Event Details Page**
-
-* Shows:
-
-  * Event name and description
-  * Available slots in user’s local time
-  * Booking form with name + email input
-
-### 3. **Create Event Page**
-
-* Form to input event name, description, and slots (date + time)
-* Time zone awareness on the input
-
-### 4. **My Bookings Page (Optional)**
-
-* Displays list of bookings by current user (using email as identifier)
-
-### 5. **Success/Feedback Screens**
-
-* Post-booking confirmation
-* Error/failure states (e.g. already booked, slot full)
+- **Slot “remaining capacity”** computed server-side and sent in API  
+- **Cancel Event** endpoint for creators to disable future bookings  
+- **Public “cancel by email”** endpoint so visitors can cancel without signing up  
+- **Hybrid auth model**: only event creation/cancellation locked behind JWT; bookings remain public  
 
 ---
 
-## 📊 API Specification (Suggested)
+## 🤔 Assumptions & Trade-offs
 
-| Method | Endpoint                 | Description              |
-| ------ | ------------------------ | ------------------------ |
-| POST   | `/events`                | Create an event          |
-| GET    | `/events`                | List all events          |
-| GET    | `/events/:id`            | Get event + slots        |
-| POST   | `/events/:id/bookings`   | Book a slot              |
-| GET    | `/users/:email/bookings` | View bookings (optional) |
+- **Email-only booking**: no invite links or magic tokens—relies on honest email entry  
+- **No user accounts for visitors**: keeps friction low but opens “email snooping” risk  
+- **Creator identity** via JWT only for event management; no multi-admin support    
 
 ---
 
-## 📚 Tech Stack (Suggestions)
+## 🔭 Areas for Improvement
 
-* **Frontend**: React (Vite) + TailwindCSS
-* **Backend**: FastAPI / Flask / Express.js
-* **Database**: SQLite or PostgreSQL
-* **Deployment**: Vercel (frontend) + Render / Railway (backend)
-
----
-
-## 🚗 Deployment Instructions
-
-### 🌐 Example Hosting Platforms
-
-Here are some services you can use to deploy your frontend and backend:
-
-#### Frontend (Static Hosting)
-
-* [Vercel](https://vercel.com/) – Fast CI/CD with GitHub integration
-* [Netlify](https://www.netlify.com/) – Great for React/Vite apps
-* [Cloudflare Pages](https://pages.cloudflare.com/) – Free and fast
-* [GitHub Pages](https://pages.github.com/) – Works for static SPAs
-
-#### Backend (API + Database Hosting)
-
-* [Render](https://render.com/) – Easy FastAPI or Node.js hosting
-* [Railway](https://railway.app/) – Great for fullstack apps with PostgreSQL
-* [Fly.io](https://fly.io/) – Edge deployment with Docker support
-* [Replit](https://replit.com/) – Quick backend demos
-* [Supabase](https://supabase.com/) – For database + lightweight backend APIs
-
-### 📤 Submission Form
-
-To officially submit your solution, please fill out this short [Google Form](https://forms.gle/bY9UeufzBpUhiyU5A) with the following details:
-
-* Your Full Name
-* Email Address
-* GitHub repository link (private repo with access granted)
-* Frontend deployment URL (e.g., Vercel)
-* Backend deployment URL (e.g., Render)
-* Any notes or context you want us to know
-
-This helps us track all submissions in one place and ensures nothing gets missed.
-
-1. Fork this repo
-2. Build the frontend and backend
-3. Deploy (if possible) and include URLs in your README
-4. Submit GitHub link with live demo or local instructions
+- **Strong booking authentication**: send one-time tokens to visitor emails to confirm/cancel  
+- **Webhooks & notifications**: email reminders upon booking or cancellation  
+- **Availability rules**: recurring slots, buffer times, blackout periods  
+- **UI polishing**: calendar-style picker, timezone selector, dark mode switch  
+- **E2E testing**: integrate Playwright or Cypress for full-flow validation  
 
 ---
 
-## ✨ Bonus Features (Optional)
+## 🏁 Getting Started
 
-* Email confirmation on booking
-* Realtime booking updates
-* Event branding with image upload
-* Google Calendar sync (mocked is fine)
+### Backend
 
----
+```bash
+cd backend
+cp .env.example .env             # set DATABASE_URL, SECRET_KEY, etc.
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn app.main:app --reload
+```
+### Frontend
 
-## 🔍 Evaluation Rubric
-
-| Area             | What We're Looking For                        |
-| ---------------- | --------------------------------------------- |
-| ✅ Functionality  | All core features implemented, no major bugs  |
-| 📚 Code Quality  | Clear structure, modular design, comments     |
-| 🎨 UI/UX         | Responsive design, form feedback, good layout |
-| ⚙️ API Design    | RESTful, validation, edge-case handling       |
-| 🚁 Deployment    | Working links, good README, .env support      |
-| 📣 Communication | Commit hygiene, comments, README clarity      |
-
----
-
-## 📄 Submission Checklist
-
-* [x] Working backend with all relevant routes and validations
-* [x] Functional frontend with event listing, detail view, and booking
-* [x] Clear GitHub repository with meaningful commit history
-* [x] Frontend deployment URL (e.g., Vercel, Netlify)
-* [x] Backend deployment URL (e.g., Render, Railway)
-* [x] Local setup instructions (with `.env.example`)
-* [x] Well-written README explaining tech choices, folder structure, and approach
-* [x] Bonus features (if implemented) clearly listed in README
-* [x] Short write-up on assumptions made and areas for improvement
-
-> 🔒 **Plagiarism Notice:** We manually review all submissions. Identical or copy-pasted codebases will be **disqualified**. Please do original work — this helps you grow and us evaluate fairly.
-
----
-
-## 👊 Good Luck!
-
-We’re excited to see your submission. Think creatively, structure your code well, and showcase your ability to work across the stack. Happy coding!
+```bash
+cd frontend
+npm install
+npm run dev  ```
