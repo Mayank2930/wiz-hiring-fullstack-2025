@@ -13,10 +13,13 @@ from dotenv import load_dotenv
 # 1) load your .env (so os.getenv() works)
 load_dotenv()
 
-database_url = os.getenv("DATABASE_URL")
+database_url = os.environ.get("DATABASE_URL")
 if not database_url:
-    raise RuntimeError("DATABASE_URL must be set in your environment")
-context.config.set_main_option("sqlalchemy.url", database_url)
+    raise RuntimeError("DATABASE_URL env var not set")
+
+# inject it into Alembic’s config
+config = context.config
+config.set_main_option("sqlalchemy.url", database_url)
 
 # 2) grab the alembic config and set up logging
 config = context.config
