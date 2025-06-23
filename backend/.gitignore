@@ -42,3 +42,5 @@ htmlcov/
 build/
 dist/
 *.egg-
+
+.env
