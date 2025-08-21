@@ -1,6 +1,6 @@
 # Mini-Calendly
 
-A lightweight scheduling app inspired by Calendly—built with FastAPI, PostgreSQL, and React/Vite. Users can create events with time slots and public visitors can book them via name+email. Supports time-zone conversion, slot capacity, and optional booking management.
+A lightweight scheduling app inspired by Calendly—built with FastAPI, PostgreSQL, and React/Vite. Users can create events with time slots and public visitors can book them via name+email. Supports time-zone conversion, slot capacity, and optional booking management. This project is build as backend project with a sub par frontend 😅
 
 ---
 
@@ -9,7 +9,6 @@ A lightweight scheduling app inspired by Calendly—built with FastAPI, PostgreS
 
 - **Frontend:** https://wiz-hiring-fullstack-2025-98dp7m4zd-mayank2930s-projects.vercel.app/  
 - **Backend API:** _(to be deployed; URL will be added here)_  
-- **Database Admin:** _(to be deployed; URL will be added here)_
 
 ## 🧐 Overview & Approach
 
